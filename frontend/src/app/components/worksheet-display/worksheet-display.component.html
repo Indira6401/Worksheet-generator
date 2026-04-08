@@ -1,0 +1,248 @@
+<div class="worksheet-page" *ngIf="worksheet">
+  <div class="worksheet-layout">
+
+    <!-- Sidebar -->
+    <aside class="worksheet-sidebar no-print">
+      <div class="sidebar-header">
+        <mat-icon>assignment</mat-icon>
+        <h3>Worksheet Details</h3>
+      </div>
+
+      <div class="sidebar-content">
+        <div class="detail-item">
+          <span class="detail-label">Board</span>
+          <span class="detail-value">{{ worksheet.metadata.board || '-' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="detail-item">
+          <span class="detail-label">Grade</span>
+          <span class="detail-value">Grade {{ worksheet.metadata.grade || '-' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="detail-item">
+          <span class="detail-label">Subject</span>
+          <span class="detail-value">{{ capitalize(worksheet.metadata.subject || '-') }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="detail-item">
+          <span class="detail-label">Topic Mode</span>
+          <span class="detail-value">{{ capitalize(worksheet.metadata.topicMode || '-') }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="detail-label">Topics</span>
+          <ng-container *ngIf="worksheet.metadata.topics && worksheet.metadata.topics.length > 0; else noTopics">
+            <div class="topic-tags">
+              <span class="topic-tag" *ngFor="let t of worksheet.metadata.topics">{{ t }}</span>
+            </div>
+          </ng-container>
+          <ng-template #noTopics>
+            <span class="detail-value">-</span>
+          </ng-template>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="detail-item">
+          <span class="detail-label">Difficulty</span>
+          <span class="detail-value difficulty-badge" [attr.data-level]="worksheet.metadata.difficulty">
+            {{ capitalize(worksheet.metadata.difficulty) }}
+          </span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="detail-item">
+          <span class="detail-label">Question Type</span>
+          <span class="detail-value">{{ questionTypeLabel(worksheet.metadata.questionType) }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="detail-item">
+          <span class="detail-label">Questions</span>
+          <span class="detail-value">{{ worksheet.metadata.numberOfQuestions }}</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div class="detail-item">
+          <span class="detail-label">Purpose</span>
+          <span class="detail-value">{{ capitalize(worksheet.metadata.purpose) }}</span>
+        </div>
+      </div>
+
+      <div class="sidebar-actions">
+        <button mat-raised-button color="primary" class="action-btn" (click)="downloadPdf()">
+          <mat-icon>download</mat-icon>
+          Download PDF
+        </button>
+
+        <button mat-stroked-button color="primary" class="action-btn" (click)="printWorksheet()">
+          <mat-icon>print</mat-icon>
+          Print
+        </button>
+
+        <div class="answer-key-section">
+          <button
+            mat-raised-button
+            color="accent"
+            class="action-btn answer-btn"
+            [disabled]="isLoadingAnswers"
+            (click)="toggleAnswerKey()">
+            <mat-icon>{{ showAnswerKey ? 'visibility_off' : 'visibility' }}</mat-icon>
+            {{ showAnswerKey ? 'Hide Answer Key' : (answerKey ? 'Show Answer Key' : 'Get Answer Key') }}
+            <mat-spinner *ngIf="isLoadingAnswers" diameter="20" class="inline-spinner"></mat-spinner>
+          </button>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <button
+          mat-stroked-button
+          class="action-btn"
+          [disabled]="isFastRegenerating"
+          (click)="regenerateFastWorksheet()">
+          <mat-icon>bolt</mat-icon>
+          {{ isFastRegenerating ? 'Fast Regenerating...' : 'Fast Regenerate' }}
+        </button>
+
+        <button mat-stroked-button class="action-btn" (click)="regenerateWorksheet()">
+          <mat-icon>refresh</mat-icon>
+          Regenerate Worksheet
+        </button>
+
+        <button mat-button class="action-btn back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          Create New Worksheet
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Worksheet Area -->
+    <main class="worksheet-main">
+      <div class="worksheet-paper">
+
+        <!-- Worksheet Header -->
+        <div class="ws-header">
+          <div class="ws-header-line"></div>
+          <h1 class="ws-title">{{ worksheet.title }}</h1>
+          <div class="ws-meta">
+            <span>{{ capitalize(worksheet.metadata.subject) }}</span>
+            <span class="separator">|</span>
+            <span>Grade {{ worksheet.metadata.grade || '-' }}</span>
+            <span class="separator">|</span>
+            <span>{{ worksheet.metadata.board || '-' }}</span>
+          </div>
+          <div class="ws-header-line"></div>
+
+          <div class="ws-student-info">
+            <div class="info-row">
+              <div class="info-field">
+                <span class="field-label">Student Name:</span>
+                <span class="field-line"></span>
+              </div>
+              <div class="info-field short">
+                <span class="field-label">Date:</span>
+                <span class="field-line"></span>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-field short">
+                <span class="field-label">Total Marks:</span>
+                <span class="field-value">{{ worksheet.totalMarks || worksheet.questions.length }}</span>
+              </div>
+              <div class="info-field short">
+                <span class="field-label">Total Questions:</span>
+                <span class="field-value">{{ worksheet.questions.length }}</span>
+              </div>
+              <div class="info-field short">
+                <span class="field-label">Purpose:</span>
+                <span class="field-value">{{ capitalize(worksheet.metadata.purpose) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="ws-instructions" *ngIf="worksheet.instructions">
+            <mat-icon>info_outline</mat-icon>
+            <span>{{ worksheet.instructions }}</span>
+          </div>
+        </div>
+
+        <!-- Questions -->
+        <div class="ws-questions">
+          <div class="question-block" *ngFor="let q of worksheet.questions; let i = index">
+            <div class="question-header">
+              <span class="q-number">Q{{ q.number }}.</span>
+              <span class="q-marks">[{{ q.marks || 1 }} {{ (q.marks || 1) > 1 ? 'marks' : 'mark' }}]</span>
+            </div>
+            <div class="q-text">{{ q.question }}</div>
+
+            <!-- MCQ Options -->
+            <div class="q-options" *ngIf="q.options && q.options.length > 0">
+              <div class="option-item" *ngFor="let opt of q.options">
+                {{ opt }}
+              </div>
+            </div>
+
+            <!-- Match Columns -->
+            <div class="q-match" *ngIf="q.matchColumns">
+              <div class="match-table">
+                <div class="match-header">
+                  <div class="match-col">Column A</div>
+                  <div class="match-col">Column B</div>
+                </div>
+                <div class="match-row" *ngFor="let item of q.matchColumns.columnA; let j = index">
+                  <div class="match-col">{{ j + 1 }}. {{ item }}</div>
+                  <div class="match-col" *ngIf="q.matchColumns.columnB[j]">
+                    {{ getMatchLabel(j) }}. {{ q.matchColumns.columnB[j] }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Answer lines for short answer -->
+            <div class="answer-lines" *ngIf="q.type === 'short_answer'">
+              <div class="answer-line"></div>
+              <div class="answer-line"></div>
+              <div class="answer-line"></div>
+            </div>
+
+            <!-- Answer line for fill in the blank -->
+            <div class="answer-lines single" *ngIf="q.type === 'fill_blank' && !q.question.includes('_____')">
+              <div class="answer-line"></div>
+            </div>
+
+            <!-- Show answer if answer key is visible -->
+            <div class="answer-reveal" *ngIf="showAnswerKey && getAnswerForQuestion(q.number) as answer">
+              <div class="answer-header">
+                <mat-icon>check_circle</mat-icon>
+                <span>Answer:</span>
+              </div>
+              <div class="answer-text">{{ answer.answer }}</div>
+              <div class="answer-explanation" *ngIf="answer.explanation">
+                <em>{{ answer.explanation }}</em>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="ws-footer">
+          <div class="ws-footer-line"></div>
+          <p>Generated by Worksheet Generator &bull; {{ worksheet.metadata.generatedAt | date:'mediumDate' }}</p>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- No worksheet state -->
+<div class="no-worksheet" *ngIf="!worksheet">
+  <mat-icon>description</mat-icon>
+  <h2>No worksheet generated</h2>
+  <p>Go back to create a new worksheet.</p>
+  <button mat-raised-button color="primary" (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+    Create Worksheet
+  </button>
+</div>

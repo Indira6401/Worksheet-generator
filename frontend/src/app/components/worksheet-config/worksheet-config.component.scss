@@ -1,0 +1,586 @@
+// === Loading Overlay ===
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .loading-card {
+    text-align: center;
+    padding: 48px;
+    max-width: 420px;
+
+    .loading-animation {
+      margin-bottom: 24px;
+
+      .book-loader {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 60px;
+
+        .book {
+          position: relative;
+          width: 60px;
+          height: 40px;
+          margin: 0 auto;
+
+          .page {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            right: 0;
+            top: 0;
+            background: #2A7B9B;
+            border-radius: 0 4px 4px 0;
+            transform-origin: left center;
+            animation: flip 1.5s ease-in-out infinite;
+
+            &:nth-child(1) { animation-delay: 0s; opacity: 0.6; }
+            &:nth-child(2) { animation-delay: 0.3s; opacity: 0.75; }
+            &:nth-child(3) { animation-delay: 0.6s; opacity: 0.9; }
+          }
+        }
+      }
+    }
+
+    mat-spinner {
+      margin: 0 auto 24px;
+    }
+
+    .loading-title {
+      font-size: 22px;
+      font-weight: 500;
+      color: #2A7B9B;
+      margin: 0 0 8px;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    .loading-subtitle {
+      font-size: 14px;
+      color: #757575;
+      margin: 0;
+    }
+  }
+}
+
+@keyframes flip {
+  0%, 100% { transform: rotateY(0); }
+  50% { transform: rotateY(-180deg); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// === Config Container ===
+.config-container {
+  animation: fadeInUp 0.4s ease;
+}
+
+.page-header {
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2A7B9B;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 15px;
+    color: #666;
+    margin: 0;
+  }
+}
+
+// === Accordion Styling ===
+.config-accordion {
+  ::ng-deep .mat-expansion-panel-header {
+    position: relative;
+    padding-right: 56px;
+  }
+
+  .mat-expansion-panel {
+    margin-bottom: 8px;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #d4efe0;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, margin 0.3s ease;
+    overflow: hidden;
+
+    &:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    &.mat-expanded {
+      border-color: #2A7B9B;
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+  }
+
+  // Ensure expand/collapse arrow indicator is always visible
+  ::ng-deep .mat-expansion-indicator {
+    position: absolute;
+    right: 24px;
+    top: calc(50% - 4px);
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 2;
+
+    &::after {
+      color: #2A7B9B;
+      border-width: 0 3px 3px 0;
+      padding: 4px;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  mat-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    color: #333;
+
+    mat-icon {
+      color: #2A7B9B;
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  mat-panel-description {
+    color: #2A7B9B;
+    font-weight: 500;
+    font-size: 13px;
+  }
+}
+
+.panel-content {
+  padding: 8px 0 16px;
+  animation: panelSlideIn 0.3s ease;
+}
+
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.continue-btn {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.section-hint {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 16px;
+}
+
+.subsection-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+  margin: 20px 0 10px;
+}
+
+// === Option Grid (Radio cards) ===
+.option-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  .option-card {
+    display: block;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+    min-width: 120px;
+    overflow: hidden;
+
+    &:hover {
+      border-color: #57C785;
+      background: #f0faf4;
+    }
+
+    &.mat-mdc-radio-checked {
+      border-color: #2A7B9B;
+      background: #e6f7ee;
+    }
+
+    .option-label {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .option-desc {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    &.compact {
+      min-width: 100px;
+    }
+  }
+}
+
+.grade-grid {
+  .option-card {
+    min-width: 80px;
+    text-align: center;
+  }
+}
+
+// === Difficulty Cards ===
+.difficulty-grid {
+  .difficulty-card {
+    min-width: 140px;
+
+    .difficulty-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-align: center;
+
+      mat-icon {
+        color: #2A7B9B;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}
+
+// === Purpose Cards ===
+.purpose-grid {
+  .purpose-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+      color: #2A7B9B;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// === Topic Mode ===
+.topic-mode-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  .topic-mode-option {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+
+    &:hover {
+      border-color: #57C785;
+    }
+
+    &.mat-mdc-radio-checked {
+      border-color: #2A7B9B;
+      background: #e6f7ee;
+    }
+
+    .mode-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      strong {
+        font-size: 14px;
+        color: #333;
+      }
+
+      .mode-desc {
+        font-size: 12px;
+        color: #888;
+      }
+    }
+  }
+}
+
+// === Topic Chips ===
+.topic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .topic-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #ccc;
+    background: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #555;
+
+    &:hover {
+      border-color: #57C785;
+      color: #333;
+    }
+
+    &.selected {
+      border-color: #2A7B9B;
+      background: #e6f7ee;
+      color: #1b5e3a;
+    }
+
+    .chip-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.custom-topic-field {
+  width: 100%;
+  margin-top: 8px;
+}
+
+// === Generalized Info ===
+.generalized-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #e6f7ee;
+  border-radius: 10px;
+  margin-top: 12px;
+
+  mat-icon {
+    color: #3a8a56;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    font-size: 13px;
+    color: #3a8a56;
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+// === Count Options ===
+.count-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  .count-btn {
+    width: 64px;
+    height: 48px;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    background: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #555;
+
+    &:hover {
+      border-color: #57C785;
+      color: #333;
+    }
+
+    &.active {
+      border-color: #2A7B9B;
+      background: #e6f7ee;
+      color: #1b5e3a;
+    }
+
+    &.custom-btn {
+      width: auto;
+      padding: 0 20px;
+      font-size: 14px;
+    }
+  }
+}
+
+.custom-count-field {
+  max-width: 200px;
+}
+
+// === Empty State ===
+.empty-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 8px;
+  color: #999;
+  font-size: 14px;
+
+  mat-icon {
+    color: #bbb;
+  }
+
+  &.small {
+    padding: 12px;
+    font-size: 13px;
+  }
+}
+
+// === Validation Summary ===
+.validation-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: #fff3e0;
+  border: 1px solid #ffe0b2;
+  border-radius: 10px;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #e65100;
+
+  mat-icon {
+    color: #f57c00;
+    flex-shrink: 0;
+  }
+}
+
+// === CTA Section ===
+.cta-section {
+  margin-top: 32px;
+  text-align: center;
+
+  .generate-btn {
+    padding: 12px 48px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    height: 56px;
+    min-width: 280px;
+
+    mat-icon {
+      margin-right: 8px;
+    }
+
+    &:not(:disabled) {
+      background: linear-gradient(135deg, #2A7B9B, #57C785);
+      box-shadow: 0 4px 16px rgba(42, 123, 155, 0.3);
+
+      &:hover {
+        box-shadow: 0 6px 24px rgba(42, 123, 155, 0.4);
+        transform: translateY(-1px);
+      }
+    }
+  }
+}
+
+// === Responsive ===
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .option-grid {
+    gap: 8px;
+
+    .option-card {
+      min-width: unset;
+      flex: 1 1 calc(50% - 8px);
+    }
+  }
+
+  .grade-grid .option-card {
+    flex: 1 1 calc(25% - 8px);
+  }
+
+  .cta-section .generate-btn {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .topic-chips .topic-chip {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+// Make the full card clickable and keep Material radio state in sync.
+.option-card,
+.topic-mode-option {
+  ::ng-deep .mat-internal-form-field {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    margin: 0;
+    gap: 0;
+  }
+
+  ::ng-deep .mdc-radio {
+    display: none;
+  }
+
+  ::ng-deep .mdc-label {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    cursor: pointer;
+  }
+}
+
+.option-card.compact {
+  ::ng-deep .mdc-label {
+    padding: 10px 16px;
+  }
+}

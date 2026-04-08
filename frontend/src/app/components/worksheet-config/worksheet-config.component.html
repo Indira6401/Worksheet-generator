@@ -1,0 +1,333 @@
+<!-- Loading overlay -->
+<div class="loading-overlay" *ngIf="isGenerating">
+  <div class="loading-card">
+    <div class="loading-animation">
+      <div class="book-loader">
+        <div class="book">
+          <div class="page"></div>
+          <div class="page"></div>
+          <div class="page"></div>
+        </div>
+      </div>
+    </div>
+    <mat-spinner diameter="48" color="primary"></mat-spinner>
+    <h2 class="loading-title">{{ loadingMessage }}</h2>
+    <p class="loading-subtitle">This may take a moment. We're crafting quality questions for you.</p>
+  </div>
+</div>
+
+<!-- Main config form -->
+<div class="config-container" *ngIf="!isGenerating">
+  <div class="page-header">
+    <h1>Create Your Worksheet</h1>
+    <p>Configure your worksheet by filling in the sections below. All required fields are marked.</p>
+  </div>
+
+  <form [formGroup]="worksheetForm" class="config-form">
+    <mat-accordion class="config-accordion">
+
+      <!-- 1. Board Selection -->
+      <mat-expansion-panel (opened)="activeStep = 0">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>account_balance</mat-icon>
+            <span>Board</span>
+          </mat-panel-title>
+          <mat-panel-description *ngIf="worksheetForm.get('board')?.value">
+            {{ getBoardName(worksheetForm.get('board')!.value) }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="panel-content">
+          <p class="section-hint">Select the academic board for this worksheet.</p>
+          <mat-radio-group formControlName="board" class="option-grid">
+            <mat-radio-button *ngFor="let board of boards" [value]="board.id" class="option-card">
+              <div class="option-label">{{ board.name }}</div>
+            </mat-radio-button>
+          </mat-radio-group>
+          <div class="empty-state" *ngIf="boards.length === 0">
+            <mat-icon>hourglass_empty</mat-icon>
+            <span>Loading boards...</span>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- 2. Grade Selection -->
+      <mat-expansion-panel (opened)="activeStep = 1">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>grade</mat-icon>
+            <span>Grade</span>
+          </mat-panel-title>
+          <mat-panel-description *ngIf="worksheetForm.get('grade')?.value">
+            {{ getGradeName(worksheetForm.get('grade')!.value) }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="panel-content">
+          <p class="section-hint">Choose the grade level.</p>
+          <mat-radio-group formControlName="grade" class="option-grid grade-grid">
+            <mat-radio-button *ngFor="let grade of grades" [value]="grade.id" class="option-card compact">
+              <div class="option-label">{{ grade.name }}</div>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- 3. Subject Selection -->
+      <mat-expansion-panel [disabled]="!worksheetForm.get('grade')?.value" (opened)="activeStep = 2">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>menu_book</mat-icon>
+            <span>Subject</span>
+          </mat-panel-title>
+          <mat-panel-description *ngIf="worksheetForm.get('subject')?.value">
+            {{ getSubjectName(worksheetForm.get('subject')!.value) }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="panel-content">
+          <p class="section-hint">Select the subject for the worksheet.</p>
+          <mat-radio-group formControlName="subject" class="option-grid">
+            <mat-radio-button *ngFor="let subject of subjects" [value]="subject.id" class="option-card">
+              <div class="option-label">{{ subject.name }}</div>
+            </mat-radio-button>
+          </mat-radio-group>
+          <div class="empty-state" *ngIf="!worksheetForm.get('grade')?.value">
+            <mat-icon>info</mat-icon>
+            <span>Please select a grade first</span>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- 4. Topic Selection -->
+      <mat-expansion-panel [disabled]="!worksheetForm.get('subject')?.value" (opened)="activeStep = 4">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>topic</mat-icon>
+            <span>Topic Selection</span>
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ worksheetForm.get('topicMode')?.value === 'specific'
+              ? (selectedTopics.length > 0 ? (selectedTopics.length + ' topic(s) selected') : '-')
+              : 'Generalized Worksheet' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="panel-content">
+          <p class="section-hint">Choose how to focus your worksheet content.</p>
+
+          <mat-radio-group formControlName="topicMode" class="topic-mode-group" (change)="onTopicModeChange($event)">
+            <mat-radio-button value="specific" class="topic-mode-option">
+              <div class="mode-label">
+                <strong>Specific Topics</strong>
+                <span class="mode-desc">Choose individual topics from the syllabus</span>
+              </div>
+            </mat-radio-button>
+            <mat-radio-button value="generalized" class="topic-mode-option">
+              <div class="mode-label">
+                <strong>Generalized Worksheet</strong>
+                <span class="mode-desc">Cover the selected subject broadly</span>
+              </div>
+            </mat-radio-button>
+          </mat-radio-group>
+
+          <div class="topics-section" *ngIf="worksheetForm.get('topicMode')?.value === 'specific'">
+            <h4 class="subsection-title">Suggested Topics</h4>
+            <div class="topic-chips" *ngIf="suggestedTopics.length > 0">
+              <button
+                *ngFor="let topic of suggestedTopics"
+                type="button"
+                class="topic-chip"
+                [class.selected]="isTopicSelected(topic)"
+                (click)="onTopicToggle(topic)">
+                <mat-icon class="chip-icon">{{ isTopicSelected(topic) ? 'check_circle' : 'add_circle_outline' }}</mat-icon>
+                {{ topic }}
+              </button>
+            </div>
+            <div class="empty-state small" *ngIf="suggestedTopics.length === 0">
+              <mat-icon>lightbulb</mat-icon>
+              <span>No topic suggestions available for this combination. You can add custom topics below.</span>
+            </div>
+
+            <h4 class="subsection-title">Add Custom Topics</h4>
+            <mat-form-field appearance="outline" class="custom-topic-field">
+              <mat-label>Type a topic and press Enter</mat-label>
+              <mat-chip-grid #chipGrid>
+                <mat-chip-row
+                  *ngFor="let topic of selectedTopics"
+                  [removable]="true"
+                  (removed)="removeCustomTopic(topic)">
+                  {{ topic }}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-row>
+              </mat-chip-grid>
+              <input
+                matInput
+                [matChipInputFor]="chipGrid"
+                [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="addCustomTopic($event)"
+                placeholder="Add topic..."
+              />
+            </mat-form-field>
+
+            <button mat-stroked-button color="primary" class="continue-btn"
+              [disabled]="selectedTopics.length === 0"
+              (click)="openPanel(5)">
+              Continue
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </div>
+
+          <div class="generalized-info" *ngIf="worksheetForm.get('topicMode')?.value === 'generalized'">
+            <mat-icon>auto_awesome</mat-icon>
+            <p>The worksheet will cover a broad range of topics from the selected subject for the chosen board and grade.</p>
+          </div>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- 5. Difficulty Level -->
+      <mat-expansion-panel (opened)="activeStep = 5">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>tune</mat-icon>
+            <span>Difficulty Level</span>
+          </mat-panel-title>
+          <mat-panel-description *ngIf="worksheetForm.get('difficulty')?.value">
+            {{ worksheetForm.get('difficulty')!.value | titlecase }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="panel-content">
+          <p class="section-hint">Set the difficulty level for the questions.</p>
+          <mat-radio-group formControlName="difficulty" class="option-grid difficulty-grid" (change)="onDifficultySelected()">
+            <mat-radio-button
+              *ngFor="let level of difficultyLevels"
+              [value]="level.value"
+              class="option-card difficulty-card">
+              <div class="difficulty-content">
+                <mat-icon>{{ level.icon }}</mat-icon>
+                <div class="option-label">{{ level.label }}</div>
+                <div class="option-desc">{{ level.desc }}</div>
+              </div>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- 6. Question Type -->
+      <mat-expansion-panel (opened)="activeStep = 6">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>help_outline</mat-icon>
+            <span>Question Type</span>
+          </mat-panel-title>
+          <mat-panel-description *ngIf="worksheetForm.get('questionType')?.value">
+            {{ getQuestionTypeLabel(worksheetForm.get('questionType')!.value) }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="panel-content">
+          <p class="section-hint">Choose the style of questions.</p>
+          <mat-radio-group formControlName="questionType" class="option-grid" (change)="onQuestionTypeSelected()">
+            <mat-radio-button
+              *ngFor="let qt of questionTypes"
+              [value]="qt.value"
+              class="option-card compact">
+              <div class="option-label">{{ qt.label }}</div>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- 7. Number of Questions -->
+      <mat-expansion-panel (opened)="activeStep = 7">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>format_list_numbered</mat-icon>
+            <span>Number of Questions</span>
+          </mat-panel-title>
+          <mat-panel-description *ngIf="worksheetForm.get('numberOfQuestions')?.value">
+            {{ worksheetForm.get('numberOfQuestions')!.value }} questions
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="panel-content">
+          <p class="section-hint">How many questions should the worksheet contain?</p>
+          <div class="count-options">
+            <button
+              *ngFor="let count of questionCounts"
+              type="button"
+              class="count-btn"
+              [class.active]="!isCustomCount && worksheetForm.get('numberOfQuestions')?.value === count"
+              (click)="setQuestionCount(count); onQuestionCountSelected()">
+              {{ count }}
+            </button>
+            <button
+              type="button"
+              class="count-btn custom-btn"
+              [class.active]="isCustomCount"
+              (click)="enableCustomCount()">
+              Custom
+            </button>
+          </div>
+          <mat-form-field *ngIf="isCustomCount" appearance="outline" class="custom-count-field">
+            <mat-label>Enter number (1-50)</mat-label>
+            <input matInput type="number" min="1" max="50"
+                   formControlName="customQuestionCount"
+                   (input)="onCustomCountChange($event)">
+          </mat-form-field>
+        </div>
+      </mat-expansion-panel>
+
+      <!-- 8. Worksheet Purpose -->
+      <mat-expansion-panel (opened)="activeStep = 8">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>flag</mat-icon>
+            <span>Worksheet Purpose</span>
+          </mat-panel-title>
+          <mat-panel-description *ngIf="worksheetForm.get('purpose')?.value">
+            {{ worksheetForm.get('purpose')!.value | titlecase }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="panel-content">
+          <p class="section-hint">What is this worksheet for?</p>
+          <mat-radio-group formControlName="purpose" class="option-grid purpose-grid">
+            <mat-radio-button
+              *ngFor="let p of purposes"
+              [value]="p.value"
+              class="option-card">
+              <div class="purpose-content">
+                <mat-icon>{{ p.icon }}</mat-icon>
+                <div class="option-label">{{ p.label }}</div>
+              </div>
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </mat-expansion-panel>
+
+    </mat-accordion>
+
+    <!-- Validation summary -->
+    <div class="validation-summary" *ngIf="getValidationErrors().length > 0">
+      <mat-icon>warning</mat-icon>
+      <span>Please complete: <strong>{{ getValidationErrors().join(', ') }}</strong></span>
+    </div>
+
+    <!-- Generate Button -->
+    <div class="cta-section">
+      <button
+        mat-raised-button
+        color="primary"
+        class="generate-btn"
+        [disabled]="!canGenerate()"
+        (click)="generateWorksheet()">
+        <mat-icon>auto_awesome</mat-icon>
+        Generate Worksheet
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,39 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="96" y1="64" x2="416" y2="448" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3A8DAD"/>
+      <stop offset="1" stop-color="#57C785"/>
+    </linearGradient>
+    <linearGradient id="smoke" x1="186" y1="116" x2="338" y2="304" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F8FF"/>
+      <stop offset="1" stop-color="#CDE7FF"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="158" y1="290" x2="366" y2="402" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE28A"/>
+      <stop offset="1" stop-color="#F3A712"/>
+    </linearGradient>
+    <filter id="shadow" x="80" y="70" width="352" height="372" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#0F3C4D" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <circle cx="256" cy="256" r="224" fill="url(#bg)"/>
+
+  <g filter="url(#shadow)">
+    <path d="M273 118C242 119 216 143 214 175C212 201 225 220 248 235C220 236 197 257 194 285C190 321 221 351 257 349C292 347 320 317 322 282C323 258 312 241 291 230C315 220 329 198 328 173C327 141 303 117 273 118Z" fill="url(#smoke)"/>
+    <path d="M255 154C229 156 215 184 228 206C237 221 252 225 272 226C248 229 230 245 229 266C227 290 246 308 270 306C293 304 311 286 312 264C313 245 301 230 281 223C302 215 313 199 310 181C307 163 287 152 255 154Z" fill="#EBF5FF" opacity="0.8"/>
+
+    <path d="M236 233C242 224 253 218 266 218C279 218 290 224 296 233" stroke="#2A7B9B" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="242" cy="204" r="10" fill="#2A7B9B"/>
+    <circle cx="290" cy="204" r="10" fill="#2A7B9B"/>
+    <path d="M245 256C256 264 275 264 287 256" stroke="#2A7B9B" stroke-width="10" stroke-linecap="round"/>
+
+    <path d="M165 341C157 324 160 308 175 298C190 288 214 286 241 294L299 311C317 316 337 314 352 305L363 299C370 295 379 296 384 303C389 310 389 320 383 326L365 344C351 358 332 367 312 369H232C212 369 192 362 177 350L165 341Z" fill="url(#gold)"/>
+    <path d="M187 330C205 321 230 321 255 329L292 341C314 348 338 344 357 331" stroke="#8D5A00" stroke-width="10" stroke-linecap="round"/>
+    <path d="M320 297L350 274C360 266 375 267 383 277C390 286 388 300 378 308L349 330" fill="#F8C54A"/>
+    <path d="M319 298L350 274C360 266 375 267 383 277C390 286 388 300 378 308L349 330" stroke="#8D5A00" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M157 334C145 334 135 324 135 311C135 298 145 288 158 288H172V334H157Z" fill="#F8C54A" stroke="#8D5A00" stroke-width="10"/>
+    <ellipse cx="270" cy="370" rx="86" ry="13" fill="#1D5D73" opacity="0.28"/>
+    <path d="M221 292C226 276 242 265 259 266C278 267 294 280 298 298" stroke="#FFF4C4" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+  </g>
+</svg>

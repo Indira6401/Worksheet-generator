@@ -1,0 +1,556 @@
+// === Layout ===
+.worksheet-page {
+  animation: fadeIn 0.4s ease;
+}
+
+.worksheet-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+// === Sidebar ===
+.worksheet-sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 80px;
+  overflow: hidden;
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 20px 16px;
+    background: linear-gradient(135deg, #2A7B9B 0%, #57C785 100%);
+    color: #fff;
+
+    mat-icon {
+      font-size: 24px;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .sidebar-content {
+    padding: 16px 20px;
+
+    .detail-item {
+      padding: 10px 0;
+
+      .detail-label {
+        display: block;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #999;
+        margin-bottom: 4px;
+      }
+
+      .detail-value {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .difficulty-badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+
+        &[data-level="easy"] { background: #e8f5e9; color: #2e7d32; }
+        &[data-level="medium"] { background: #fff3e0; color: #e65100; }
+        &[data-level="hard"] { background: #fce4ec; color: #c62828; }
+        &[data-level="advanced"] { background: #ede7f6; color: #4527a0; }
+      }
+
+      .topic-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 4px;
+
+        .topic-tag {
+          display: inline-block;
+          padding: 2px 8px;
+          border-radius: 10px;
+          background: #e6f7ee;
+          color: #2A7B9B;
+          font-size: 11px;
+        }
+      }
+    }
+
+    mat-divider {
+      margin: 0;
+    }
+  }
+
+  .sidebar-actions {
+    padding: 16px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .action-btn {
+      width: 100%;
+      justify-content: center;
+
+      mat-icon {
+        margin-right: 6px;
+      }
+    }
+
+    .answer-key-section {
+      .answer-btn {
+        width: 100%;
+
+        .inline-spinner {
+          display: inline-block;
+          margin-left: 8px;
+        }
+      }
+
+      .countdown-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px;
+        background: #f5f5f5;
+        border-radius: 10px;
+        font-size: 13px;
+        color: #888;
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          color: #bbb;
+        }
+      }
+    }
+
+    .back-btn {
+      color: #888;
+      font-size: 13px;
+    }
+  }
+}
+
+// === Main Worksheet ===
+.worksheet-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.worksheet-paper {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  padding: 48px;
+  min-height: 600px;
+
+  // Header
+  .ws-header {
+    margin-bottom: 32px;
+
+    .ws-header-line {
+      height: 3px;
+      background: linear-gradient(90deg, #2A7B9B, #57C785, #EDDD53);
+      border-radius: 2px;
+      margin: 8px 0;
+    }
+
+    .ws-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      color: #2A7B9B;
+      margin: 16px 0 8px;
+    }
+
+    .ws-meta {
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+
+      .separator {
+        margin: 0 8px;
+        color: #ccc;
+      }
+    }
+
+    .ws-student-info {
+      margin-top: 20px;
+      padding: 16px;
+      background: #fafafa;
+      border-radius: 8px;
+
+      .info-row {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 12px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      .info-field {
+        flex: 1;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+
+        &.short {
+          flex: 0 0 auto;
+        }
+
+        .field-label {
+          font-size: 13px;
+          font-weight: 500;
+          color: #555;
+          white-space: nowrap;
+        }
+
+        .field-line {
+          flex: 1;
+          border-bottom: 1px solid #ccc;
+          min-width: 100px;
+        }
+
+        .field-value {
+          font-size: 13px;
+          color: #333;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .ws-instructions {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #e6f7ee;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #2A7B9B;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+    }
+  }
+
+  // Questions
+  .ws-questions {
+    .question-block {
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 8px;
+
+        .q-number {
+          font-weight: 600;
+          color: #2A7B9B;
+          font-size: 15px;
+        }
+
+        .q-marks {
+          font-size: 12px;
+          color: #999;
+          font-style: italic;
+        }
+      }
+
+      .q-text {
+        font-size: 15px;
+        line-height: 1.6;
+        color: #333;
+        margin-bottom: 12px;
+        padding-left: 24px;
+      }
+
+      .q-options {
+        padding-left: 36px;
+
+        .option-item {
+          padding: 6px 0;
+          font-size: 14px;
+          color: #555;
+          line-height: 1.5;
+        }
+      }
+
+      .q-match {
+        padding-left: 24px;
+
+        .match-table {
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          overflow: hidden;
+          max-width: 500px;
+
+          .match-header {
+            display: flex;
+            background: #e6f7ee;
+
+            .match-col {
+              flex: 1;
+              padding: 10px 16px;
+              font-weight: 600;
+              font-size: 13px;
+              color: #2A7B9B;
+            }
+          }
+
+          .match-row {
+            display: flex;
+            border-top: 1px solid #eee;
+
+            .match-col {
+              flex: 1;
+              padding: 8px 16px;
+              font-size: 13px;
+              color: #555;
+            }
+
+            &:nth-child(even) {
+              background: #fafafa;
+            }
+          }
+        }
+      }
+
+      .answer-lines {
+        padding-left: 24px;
+        margin-top: 8px;
+
+        .answer-line {
+          border-bottom: 1px dotted #ccc;
+          height: 24px;
+          margin-bottom: 4px;
+        }
+
+        &.single .answer-line {
+          max-width: 300px;
+        }
+      }
+
+      // Answer reveal
+      .answer-reveal {
+        margin-top: 12px;
+        padding: 12px 16px;
+        background: #e6f7ee;
+        border-radius: 8px;
+        border-left: 4px solid #57C785;
+        margin-left: 24px;
+        animation: slideDown 0.3s ease;
+
+        .answer-header {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-bottom: 6px;
+
+          mat-icon {
+            color: #3a8a56;
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+
+          span {
+            font-weight: 600;
+            color: #3a8a56;
+            font-size: 13px;
+          }
+        }
+
+        .answer-text {
+          font-size: 14px;
+          color: #333;
+          line-height: 1.5;
+        }
+
+        .answer-explanation {
+          margin-top: 6px;
+          font-size: 12px;
+          color: #666;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+
+  // Footer
+  .ws-footer {
+    margin-top: 32px;
+
+    .ws-footer-line {
+      height: 2px;
+      background: linear-gradient(90deg, #EDDD53, #57C785, #2A7B9B);
+      border-radius: 2px;
+    }
+
+    p {
+      text-align: center;
+      font-size: 11px;
+      color: #aaa;
+      margin: 8px 0 0;
+    }
+  }
+}
+
+// === No Worksheet ===
+.no-worksheet {
+  text-align: center;
+  padding: 80px 20px;
+  color: #999;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ddd;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 22px;
+    color: #666;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+}
+
+// === Animations ===
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// === Print Styles ===
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .worksheet-layout {
+    display: block;
+  }
+
+  .worksheet-paper {
+    box-shadow: none;
+    padding: 20px;
+    border-radius: 0;
+  }
+
+  .answer-reveal {
+    page-break-inside: avoid;
+  }
+
+  .question-block {
+    page-break-inside: avoid;
+  }
+}
+
+// === Responsive ===
+@media (max-width: 960px) {
+  .worksheet-layout {
+    flex-direction: column;
+  }
+
+  .worksheet-sidebar {
+    width: 100%;
+    min-width: unset;
+    position: static;
+
+    .sidebar-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0 16px;
+
+      mat-divider {
+        display: none;
+      }
+    }
+  }
+
+  .worksheet-paper {
+    padding: 24px;
+
+    .ws-header {
+      .ws-title {
+        font-size: 20px;
+      }
+
+      .ws-student-info .info-row {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .worksheet-paper {
+    padding: 16px;
+
+    .ws-header .ws-title {
+      font-size: 18px;
+    }
+
+    .ws-questions .question-block {
+      .q-text {
+        padding-left: 0;
+      }
+      .q-options {
+        padding-left: 12px;
+      }
+      .answer-reveal {
+        margin-left: 0;
+      }
+    }
+  }
+}
