@@ -13,6 +13,10 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/api/curriculum', curriculumRoutes);
 app.use('/api/worksheet', worksheetRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Worksheet Generator API is running');
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
