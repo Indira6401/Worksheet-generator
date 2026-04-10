@@ -26,3 +26,5 @@ Run locally:
 
 - Backend: `cd backend && npm install && npm start`
 - Frontend: `cd frontend && npm install && npm start`
+
+Up and running at - https://worksheet-generator-eta.vercel.app
