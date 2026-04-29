@@ -5,8 +5,3 @@ frontend/dist/
 frontend/out-tsc/
 backend/.env
 .DS_Store
-
-# Next.js
-nextjs/node_modules/
-nextjs/.next/
-nextjs/.env.local
