@@ -83,6 +83,7 @@ export default function WorksheetConfig() {
     questionType: 'mcq',
     numberOfQuestions: 10,
     purpose: 'practice',
+    fastMode: false,
   });
 
   const [customTopic, setCustomTopic] = useState('');

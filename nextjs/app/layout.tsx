@@ -12,9 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="min-h-screen bg-gray-50 flex flex-col">
         <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col">
             <span className="text-2xl font-bold text-blue-600">SheetGenie</span>
-            <span className="text-sm text-gray-500 hidden sm:block">AI Worksheet Generator</span>
+            <span className="text-xs text-gray-400">AI worksheet generator</span>
           </div>
         </header>
 

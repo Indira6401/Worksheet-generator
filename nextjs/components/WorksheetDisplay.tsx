@@ -6,6 +6,18 @@ import { useWorksheet } from '@/context/WorksheetContext';
 import { generatePdf } from '@/lib/pdf';
 import type { AnswerKey, WorksheetQuestion } from '@/types/worksheet';
 
+function formatAnswer(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>)
+      .map(([k, v]) => `${k} → ${v}`)
+      .join('\n');
+  }
+  return JSON.stringify(value);
+}
+
 function QuestionView({ q }: { q: WorksheetQuestion }) {
   return (
     <div className="py-4 border-b border-gray-100 last:border-0">
@@ -99,8 +111,11 @@ export default function WorksheetDisplay() {
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Action bar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <button onClick={handleNewWorksheet} className="text-sm text-gray-500 hover:text-blue-600">
-          ← New worksheet
+        <button
+          onClick={handleNewWorksheet}
+          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 flex items-center gap-1"
+        >
+          ← New Worksheet
         </button>
         <div className="flex flex-wrap gap-2">
           <button
@@ -173,9 +188,11 @@ export default function WorksheetDisplay() {
               <div key={ans.number} className="flex gap-3">
                 <span className="font-semibold text-gray-700 w-6 shrink-0">{ans.number}.</span>
                 <div>
-                  <p className="text-gray-800">{ans.answer}</p>
+                  {formatAnswer(ans.answer).split('\n').map((line) => (
+                    <p key={line} className="text-gray-800">{line}</p>
+                  ))}
                   {ans.explanation && (
-                    <p className="text-sm text-gray-500 italic mt-0.5">{ans.explanation}</p>
+                    <p className="text-sm text-gray-500 italic mt-0.5">{formatAnswer(ans.explanation)}</p>
                   )}
                 </div>
               </div>
