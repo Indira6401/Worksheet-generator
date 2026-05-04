@@ -42,11 +42,12 @@ Browser → Angular (Vercel) → Express API (Render) → OpenAI Responses API
 **PDF export**: Entirely client-side via `PdfService` (jsPDF). No backend involvement.
 
 ### Model selection
-| Config flag | Model |
-|-------------|-------|
-| default | `gpt-4.1` |
-| `fastMode: true` | `gpt-4.1-mini` (no retry on validation failure) |
-| `premiumMode: true` | `gpt-5.4` |
+| Config flag | Provider | Model | Notes |
+|-------------|----------|-------|-------|
+| default | OpenAI | `gpt-4.1` | With validation retry |
+| `fastMode: true` | Google Gemini | `gemini-2.0-flash` | Free tier, no retry |
+| `premiumMode: true` | OpenAI | `gpt-5.4` | With validation retry |
+| answer key | OpenAI | `gpt-4.1` | Always OpenAI |
 
 ### Frontend routing
 Worksheet data is passed between routes via **Angular router state** (not a store or URL params):
