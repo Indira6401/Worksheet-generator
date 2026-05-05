@@ -72,7 +72,7 @@ function isQuestionValidForType(q: QuestionRecord, expectedType: string): boolea
 }
 
 function normalizeShape(q: QuestionRecord, expectedType: string, index: number): QuestionRecord {
-  const normalized = { ...q, number: index + 1, type: expectedType };
+  const normalized: QuestionRecord = { ...q, number: index + 1, type: expectedType };
   if (expectedType === 'mcq') {
     return { ...normalized, options: Array.isArray(q.options) ? (q.options as unknown[]).slice(0, 4) : [] };
   }

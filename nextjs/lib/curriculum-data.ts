@@ -7,7 +7,7 @@ interface CurriculumData {
   grades: Record<string, { id: string; name: string }[]>;
   subjects: Record<string, Record<string, { id: string; name: string }[]>>;
   publishers: Record<string, Record<string, { id: string; name: string }[]>>;
-  topics: Record<string, Record<string, TopicsBySubject>>;
+  topics: Record<string, TopicsBySubject>;
 }
 
 export const curriculumData: CurriculumData = {
