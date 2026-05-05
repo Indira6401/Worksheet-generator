@@ -1,6 +1,10 @@
 import OpenAI from 'openai';
 
-export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+let _client: OpenAI | null = null;
+function getClient() {
+  if (!_client) _client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  return _client;
+}
 
 export const MODELS = {
   worksheet: 'gpt-4.1',
@@ -10,7 +14,7 @@ export const MODELS = {
 } as const;
 
 export async function callOpenAI(prompt: string, model: string, maxTokens: number): Promise<unknown> {
-  const response = await openai.responses.create({
+  const response = await getClient().responses.create({
     model,
     input: [{ role: 'user', content: prompt }],
     max_output_tokens: maxTokens,
