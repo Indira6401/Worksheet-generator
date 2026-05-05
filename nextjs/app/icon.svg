@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Blue rounded background -->
+  <rect width="32" height="32" rx="7" fill="#2563eb"/>
+  <!-- White paper/sheet -->
+  <rect x="6" y="5" width="14" height="18" rx="2" fill="white"/>
+  <!-- Paper lines -->
+  <rect x="9" y="10" width="8" height="1.5" rx="0.75" fill="#93c5fd"/>
+  <rect x="9" y="13.5" width="6" height="1.5" rx="0.75" fill="#93c5fd"/>
+  <rect x="9" y="17" width="7" height="1.5" rx="0.75" fill="#93c5fd"/>
+  <!-- Gold sparkle (4-point star) -->
+  <path d="M25 5 L25.8 8 L29 9 L25.8 10 L25 13 L24.2 10 L21 9 L24.2 8 Z" fill="#fbbf24"/>
+</svg>

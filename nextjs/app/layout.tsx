@@ -3,8 +3,12 @@ import './globals.css';
 import { WorksheetProvider } from '@/context/WorksheetContext';
 
 export const metadata: Metadata = {
-  title: 'SheetGenie',
-  description: 'AI-powered worksheet generator for K-12 students',
+  title: {
+    default: 'SheetGenie',
+    template: '%s | SheetGenie',
+  },
+  description: 'Generate curriculum-aligned worksheets for K-12 students in seconds using AI.',
+  icons: { icon: '/icon.svg' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
