@@ -1,6 +1,5 @@
 import { type NextRequest } from 'next/server';
 import { callOpenAI, MODELS } from '@/lib/openai';
-import { callGemini } from '@/lib/gemini';
 import {
   QUESTION_TYPE_RULES,
   normalizeQuestionType,
@@ -10,13 +9,10 @@ import {
 
 type WorksheetRecord = Record<string, unknown>;
 
-function getModel(premiumMode: boolean): string {
-  return premiumMode ? MODELS.premiumWorksheet : MODELS.worksheet;
-}
-
-async function callAI(prompt: string, fastMode: boolean, premiumMode: boolean, maxTokens: number): Promise<unknown> {
-  if (fastMode) return callGemini(prompt, maxTokens);
-  return callOpenAI(prompt, getModel(premiumMode), maxTokens);
+function getModel(fastMode: boolean, premiumMode: boolean): string {
+  if (premiumMode) return MODELS.premiumWorksheet;
+  if (fastMode) return MODELS.fastWorksheet;
+  return MODELS.worksheet;
 }
 
 export async function POST(request: NextRequest) {
@@ -88,7 +84,8 @@ Return JSON with shape:
 
 Omit options for non-MCQ. Omit matchColumns for non-match.`;
 
-    let worksheet = await callAI(prompt, fastModeValue, premiumModeValue, 4000) as WorksheetRecord;
+    const model = getModel(fastModeValue, premiumModeValue);
+    let worksheet = await callOpenAI(prompt, model, 4000) as WorksheetRecord;
     worksheet = normalizeWorksheet(worksheet, questionTypeValue, questionCount);
 
     if (!fastModeValue && !isWorksheetValid(worksheet, questionTypeValue, questionCount)) {
@@ -100,7 +97,7 @@ Return a corrected worksheet JSON where all ${questionCount} questions are stric
 Do not include any question whose type differs from "${questionTypeValue}".
 Do not return explanations or extra text outside the JSON object.`;
 
-      worksheet = await callAI(correctionPrompt, fastModeValue, premiumModeValue, 4000) as WorksheetRecord;
+      worksheet = await callOpenAI(correctionPrompt, model, 4000) as WorksheetRecord;
       worksheet = normalizeWorksheet(worksheet, questionTypeValue, questionCount);
     }
 

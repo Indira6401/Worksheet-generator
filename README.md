@@ -91,13 +91,43 @@ const result = JSON.parse(response.output_text);
 
 **Model selection:**
 
-| Mode | Model | Use |
-|------|-------|-----|
-| Standard | `gpt-4.1` | Default quality, includes retry on validation failure |
-| Fast | `gpt-4.1-mini` | Quicker response, no retry |
-| Premium | `gpt-5.4` | Highest quality |
+| Mode | Provider | Model | Notes |
+|------|----------|-------|-------|
+| Standard | OpenAI | `gpt-4.1` | Default quality, includes retry on validation failure |
+| Fast | Google Gemini | `gemini-2.0-flash` | Free tier (1,500 req/day); falls back needed if quota 0 |
+| Premium | OpenAI | `gpt-5.4` | Highest quality |
+| Answer key | OpenAI | `gpt-4.1` | Always OpenAI, called lazily |
 
 **Prompt engineering:** Each request includes board/grade/subject context, difficulty and purpose constraints, question type rules (option counts, placeholder formats, match column structure), and explicit JSON schema expectations. The backend validates the response against the requested question type before returning it to the client.
+
+### Future: Free provider alternatives
+
+Gemini's free tier (`gemini-2.0-flash`, 1,500 req/day) is **not available in India** — Google sets the free tier quota to 0 for that region. If Gemini free tier doesn't work, these are the alternatives:
+
+**Groq (recommended — truly free, globally available)**
+- Free tier: ~6,000 tokens/min, Llama 3 models
+- API is OpenAI-compatible — swap base URL + model name in `lib/gemini.ts`
+- Sign up at [console.groq.com](https://console.groq.com), get `GROQ_API_KEY`
+
+```ts
+// lib/groq.ts — drop-in replacement for callGemini
+import OpenAI from 'openai';
+const groq = new OpenAI({ apiKey: process.env.GROQ_API_KEY, baseURL: 'https://api.groq.com/openai/v1' });
+export async function callGroq(prompt: string, maxTokens: number) {
+  const res = await groq.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: maxTokens,
+    response_format: { type: 'json_object' },
+  });
+  return JSON.parse(res.choices[0].message.content ?? '{}');
+}
+```
+
+Then in `app/api/worksheet/generate/route.ts`, replace `callGemini` import with `callGroq` — no other changes needed.
+
+**Gemini with billing**
+Enable billing on the Google Cloud project. Cost is ~$0.075/M tokens (~$0.00015 per worksheet). Still far cheaper than OpenAI.
 
 ---
 

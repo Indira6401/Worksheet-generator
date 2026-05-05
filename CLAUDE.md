@@ -42,12 +42,14 @@ Browser → Angular (Vercel) → Express API (Render) → OpenAI Responses API
 **PDF export**: Entirely client-side via `PdfService` (jsPDF). No backend involvement.
 
 ### Model selection
-| Config flag | Provider | Model | Notes |
-|-------------|----------|-------|-------|
-| default | OpenAI | `gpt-4.1` | With validation retry |
-| `fastMode: true` | Google Gemini | `gemini-2.0-flash` | Free tier, no retry |
-| `premiumMode: true` | OpenAI | `gpt-5.4` | With validation retry |
-| answer key | OpenAI | `gpt-4.1` | Always OpenAI |
+| Config flag | Model | Notes |
+|-------------|-------|-------|
+| default | `gpt-4.1` | With validation retry |
+| `fastMode: true` | `gpt-4.1-mini` | No retry on validation failure |
+| `premiumMode: true` | `gpt-5.4` | With validation retry |
+| answer key | `gpt-4.1` | Always, called lazily |
+
+> Gemini free tier attempted for fastMode but unavailable in India (quota = 0). See README for Groq alternative when implementing free provider.
 
 ### Frontend routing
 Worksheet data is passed between routes via **Angular router state** (not a store or URL params):
