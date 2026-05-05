@@ -4,7 +4,7 @@ An AI-powered worksheet generation tool for K-12 students. Teachers configure pa
 
 ---
 
-## Architecture Overview
+## OLD Architecture Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -42,7 +42,7 @@ An AI-powered worksheet generation tool for K-12 students. Teachers configure pa
 
 ---
 
-## Project Structure
+## OLD Project Structure
 
 ```
 Worksheet-generator/
@@ -165,7 +165,7 @@ The frontend dev server calls `http://localhost:3000/api` automatically.
 
 ---
 
-## Next.js Migration (React + Next.js)
+## Current Next.js Migration (React + Next.js)
 
 A complete migration scaffold lives in [`nextjs/`](nextjs/). It replaces the separate Angular frontend and Express backend with a single Next.js 15 app.
 
