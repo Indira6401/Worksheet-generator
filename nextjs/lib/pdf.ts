@@ -1,6 +1,18 @@
 import jsPDF from 'jspdf';
 import type { Worksheet, AnswerKey } from '@/types/worksheet';
 
+function formatAnswer(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>)
+      .map(([k, v]) => `${k} → ${v}`)
+      .join('\n');
+  }
+  return JSON.stringify(value);
+}
+
 export function generatePdf(worksheet: Worksheet, answerKey?: AnswerKey) {
   const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
   const pageW = 210;
@@ -126,7 +138,7 @@ export function generatePdf(worksheet: Worksheet, answerKey?: AnswerKey) {
       doc.setFontSize(11);
       doc.text(`${ans.number}.`, margin, y);
       doc.setFont('helvetica', 'normal');
-      const ansLines = doc.splitTextToSize(ans.answer, contentW - 10);
+      const ansLines = doc.splitTextToSize(formatAnswer(ans.answer), contentW - 10);
       doc.text(ansLines, margin + 8, y);
       y += ansLines.length * 5 + 2;
 
@@ -134,7 +146,7 @@ export function generatePdf(worksheet: Worksheet, answerKey?: AnswerKey) {
         checkPageBreak(10);
         doc.setFont('helvetica', 'italic');
         doc.setFontSize(10);
-        const expLines = doc.splitTextToSize(`Explanation: ${ans.explanation}`, contentW - 10);
+        const expLines = doc.splitTextToSize(`Explanation: ${formatAnswer(ans.explanation)}`, contentW - 10);
         doc.text(expLines, margin + 8, y);
         y += expLines.length * 5 + 3;
       }

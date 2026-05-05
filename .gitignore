@@ -10,3 +10,4 @@ backend/.env
 nextjs/node_modules/
 nextjs/.next/
 nextjs/.env.local
+nextjs/tsconfig.tsbuildinfo
