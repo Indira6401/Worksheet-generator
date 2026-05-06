@@ -2,6 +2,8 @@
 
 An AI-powered worksheet generation tool for K-12 students. Teachers configure parameters (board, grade, subject, topics, difficulty, question type), and the app generates curriculum-aligned worksheets using OpenAI. Worksheets can be previewed, answered, and downloaded as PDFs.
 
+📐 [System Design decisions and concepts explained using this app →](systemdesign.md)
+
 ---
 
 ## OLD Architecture Overview
