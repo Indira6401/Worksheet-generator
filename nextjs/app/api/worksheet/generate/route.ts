@@ -103,9 +103,16 @@ Do not return explanations or extra text outside the JSON object.`;
       worksheet = normalizeWorksheet(worksheet, questionTypeValue, questionCount);
     }
 
-    if (!isWorksheetValid(worksheet, questionTypeValue, questionCount)) {
+    if (!fastModeValue && !isWorksheetValid(worksheet, questionTypeValue, questionCount)) {
       return Response.json(
         { error: `Generated worksheet did not match the requested question type: ${questionTypeValue}` },
+        { status: 500 }
+      );
+    }
+
+    if (!worksheet || !Array.isArray(worksheet.questions) || (worksheet.questions as unknown[]).length === 0) {
+      return Response.json(
+        { error: 'Generated worksheet was empty. Try again or disable Fast Mode.' },
         { status: 500 }
       );
     }

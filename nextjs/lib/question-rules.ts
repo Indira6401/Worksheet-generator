@@ -87,8 +87,18 @@ export function normalizeWorksheet(
   expectedType: string,
   questionCount: number
 ): QuestionRecord {
-  if (expectedType === 'mixed' || !worksheet || !Array.isArray(worksheet.questions)) return worksheet;
+  if (!worksheet || !Array.isArray(worksheet.questions)) return worksheet;
   if ((worksheet.questions as unknown[]).length !== questionCount) return worksheet;
+
+  if (expectedType === 'mixed') {
+    const normalizedQuestions = (worksheet.questions as QuestionRecord[]).map((q, i) => {
+      const actualType = normalizeQuestionType(q?.type) || 'short_answer';
+      const shaped = normalizeShape(q, actualType, i);
+      return { ...shaped, type: actualType };
+    });
+    return { ...worksheet, questions: normalizedQuestions };
+  }
+
   const normalizedQuestions = (worksheet.questions as QuestionRecord[]).map((q, i) =>
     normalizeShape(q, expectedType, i)
   );
@@ -103,6 +113,16 @@ export function isWorksheetValid(
 ): boolean {
   if (!worksheet || !Array.isArray(worksheet.questions)) return false;
   if ((worksheet.questions as unknown[]).length !== questionCount) return false;
+
+  if (expectedType === 'mixed') {
+    const allowed = QUESTION_TYPE_RULES.mixed.allowedTypes;
+    return (worksheet.questions as QuestionRecord[]).every((q) => {
+      if (typeof q?.question !== 'string' || !q.question.trim()) return false;
+      const actualType = normalizeQuestionType(q?.type);
+      return allowed.includes(actualType);
+    });
+  }
+
   return (worksheet.questions as QuestionRecord[]).every((q, i) => {
     if (typeof q?.number !== 'number' || q.number !== i + 1) return false;
     return isQuestionValidForType(q, expectedType);

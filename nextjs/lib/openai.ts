@@ -2,23 +2,29 @@ import OpenAI from 'openai';
 
 let _client: OpenAI | null = null;
 function getClient() {
-  if (!_client) _client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  if (!_client) {
+    _client = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: 'https://api.groq.com/openai/v1',
+    });
+  }
   return _client;
 }
 
 export const MODELS = {
-  worksheet: 'gpt-4.1',
-  answerKey: 'gpt-4.1',
-  fastWorksheet: 'gpt-4.1-mini',
-  premiumWorksheet: 'gpt-5.4',
+  worksheet: 'llama-3.3-70b-versatile',
+  answerKey: 'llama-3.3-70b-versatile',
+  fastWorksheet: 'llama-3.1-8b-instant',
+  premiumWorksheet: 'llama-3.3-70b-versatile',
 } as const;
 
 export async function callOpenAI(prompt: string, model: string, maxTokens: number): Promise<unknown> {
-  const response = await getClient().responses.create({
+  const response = await getClient().chat.completions.create({
     model,
-    input: [{ role: 'user', content: prompt }],
-    max_output_tokens: maxTokens,
-    text: { format: { type: 'json_object' } },
+    messages: [{ role: 'user', content: prompt }],
+    max_tokens: maxTokens,
+    response_format: { type: 'json_object' },
   });
-  return JSON.parse(response.output_text);
+  const text = response.choices[0]?.message?.content ?? '';
+  return JSON.parse(text);
 }
